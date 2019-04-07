@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleEnumerable", "ConsoleEnumerable\ConsoleEnumerable.csproj", "{683D353F-58BD-4BCA-B096-B755B91990A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleEnumerableTests", "UnitTestProject1\ConsoleEnumerableTests.csproj", "{E93C8B15-8896-4065-BEF6-6E3B92CD591C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleEnumerableTests", "ConsoleEnumerableTests\ConsoleEnumerableTests.csproj", "{E93C8B15-8896-4065-BEF6-6E3B92CD591C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
