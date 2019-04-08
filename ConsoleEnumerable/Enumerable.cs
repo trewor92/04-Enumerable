@@ -164,9 +164,8 @@ namespace ConsoleEnumerable
         ///   { } => { }
         /// </example>
         public IEnumerable<char> GetUsedChars(IEnumerable<string> data)
-        {
-            return data.SelectMany(x => x != null ? x.ToArray() : String.Empty.ToArray()).Distinct();
-
+        {           
+            return data.Where(x => x != null).SelectMany(x => x).Distinct();
             // TODO : Implement GetUsedChars
             //throw new NotImplementedException();
         }
@@ -186,9 +185,8 @@ namespace ConsoleEnumerable
         /// </example>
         public string GetStringOfSequence<T>(IEnumerable<T> data)
         {
-            return data.Aggregate(new StringBuilder(),
-                               (sb, x) => x != null ? sb.Append(x).Append(',') : sb.Append("null").Append(','),
-                               sb => (sb.Length > 0) ? sb.ToString(0, sb.Length - 1) : "");
+            
+            return String.Join(",", data.Select(x => x == null ? "null" : x.ToString()));
 
             // TODO : Implement GetStringOfSequence
             //throw new NotImplementedException();
@@ -327,8 +325,8 @@ namespace ConsoleEnumerable
         /// </example>
         public int GetDigitCharsCount(string data)
         { 
-            return data.ToArray().Where(x => Char.IsNumber(x)).Count();
-
+           
+            return data.Count(x => Char.IsNumber(x));
             // TODO : Implement GetDigitCharsCount
             //throw new NotImplementedException();
         }
@@ -344,11 +342,15 @@ namespace ConsoleEnumerable
         {
             EventLogEntryCollection systemEvents = (new EventLog("System", ".")).Entries;
 
+
+            return systemEvents.OfType<EventLogEntry>().Count(x => x.EntryType == value);
+
+            /*
             var arr = new EventLogEntry[systemEvents.Count];
             systemEvents.CopyTo(arr, 0);
 
             return arr.Where(x => x.EntryType == value).Count();
-
+            */
             // TODO : Implement GetSpecificEventEntriesCount
             //throw new NotImplementedException();
         }
@@ -435,10 +437,7 @@ namespace ConsoleEnumerable
         /// </example>
         public IEnumerable<char> GetMissingDigits(IEnumerable<string> data)
         {
-            char[] numbers = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-
-            return numbers.Except(GetUsedChars(data).Where(x => Char.IsNumber(x)));
-
+            return "0123456789".Except(data.SelectMany(x => x));
             // TODO : Implement GetMissingDigits
             //throw new NotImplementedException();
         }
@@ -501,10 +500,12 @@ namespace ConsoleEnumerable
         /// </example>
         public IEnumerable<char> GetCommonChars(IEnumerable<string> data)
         {
-            return data.Aggregate(data.FirstOrDefault()==null?String.Empty: (IEnumerable<char>)data.FirstOrDefault(),
-                (x, y) =>x =  x==null?String.Empty:x.Intersect(y == null ? String.Empty.ToArray(): y.ToArray()), 
-                x => x==null? String.Empty : x);
+            return data.Where(x => x != null).DefaultIfEmpty(String.Empty).
+                Aggregate((agg, x) => 
+                String.Concat(agg.Intersect(x)));
 
+           
+                
             // TODO : Implement GetCommonChars
             //throw new NotImplementedException();
         }
@@ -523,7 +524,7 @@ namespace ConsoleEnumerable
         /// </example>
         public int GetSumOfAllInts(object[] data)
         {
-            return data.ToArray().Where(x => (x is int)).Select(x=>(int)x).Sum();
+            return data.OfType<int>().Sum();
 
             // TODO : Implement GetSumOfAllInts
             //throw new NotImplementedException();
@@ -543,7 +544,7 @@ namespace ConsoleEnumerable
         /// </example>
         public IEnumerable<string> GetStringsOnly(object[] data)
         {
-            return data.ToArray().Where(x => (x is string)).Select(x => (string)x);
+            return data.OfType<string>();
             // TODO : Implement GetStringsOnly
             //throw new NotImplementedException();
         }
@@ -563,7 +564,8 @@ namespace ConsoleEnumerable
         /// </example>
         public int GetTotalStringsLength(IEnumerable<string> data)
         {
-            return data.ToArray().Where(x => (x is string)).Sum(x=>x==null?0:x.Length);
+            return data.OfType<string>().Where(x=>x!=null).Sum(x=>x.Length);
+          
             // TODO : Implement GetTotalStringsLength
             //throw new NotImplementedException();
         }
@@ -600,8 +602,7 @@ namespace ConsoleEnumerable
         /// </example>
         public bool IsAllStringsAreUppercase(IEnumerable<string> data)
         {
-              return  data.DefaultIfEmpty(String.Empty).All(x => String.IsNullOrEmpty(x) ? false : x.ToArray().
-             All(y => Char.IsUpper(y)));
+            return data.SelectMany(x => x).DefaultIfEmpty().All(y => Char.IsUpper(y));
 
             // TODO : Implement IsAllStringsAreUppercase
             //throw new NotImplementedException();
@@ -759,8 +760,8 @@ namespace ConsoleEnumerable
         /// </example>
         public double GetAverageOfDoubleValues(IEnumerable<object> data)
         {
-            return data.ToArray().Where(x => (x is double)).Select(x=>(double)x).DefaultIfEmpty(0).Average();
-            // TODO : Implement GetAverageOfDoubleValues
+            return data.OfType<double>().DefaultIfEmpty(0).Average();
+             // TODO : Implement GetAverageOfDoubleValues
             //throw new NotImplementedException();
         }
 
